@@ -1,0 +1,19 @@
+# Archivos de entorno
+.env
+
+# Datos de n8n
+n8n_data/
+
+# Logs
+*.log
+
+# Archivos temporales
+*.tmp
+*.temp
+
+# Volúmenes de Docker
+postgres_data/
+
+# Archivos del sistema
+.DS_Store
+Thumbs.db

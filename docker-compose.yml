@@ -1,0 +1,44 @@
+version: '3.7'
+
+services:
+  n8n:
+    image: n8nio/n8n:latest
+    restart: unless-stopped
+    ports:
+      - "5678:5678"
+    env_file:
+      - .env
+    volumes:
+      - ./n8n_data:/home/node/.n8n
+    depends_on:
+      - postgres
+    networks:
+      - n8n-network
+
+  postgres:
+    image: postgres:15
+    restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - n8n-network
+
+  ngrok:
+    image: ngrok/ngrok:latest
+    restart: unless-stopped
+    env_file:
+      - .env
+    command: http --domain=${NGROK_DOMAIN} n8n:5678
+    depends_on:
+      - n8n
+    networks:
+      - n8n-network
+
+volumes:
+  postgres_data:
+
+networks:
+  n8n-network:
+    driver: bridge
