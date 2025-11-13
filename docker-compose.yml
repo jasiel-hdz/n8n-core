@@ -1,9 +1,24 @@
 version: '3.7'
 
 services:
+  n8n-init:
+    image: alpine:latest
+    user: "0:0"
+    volumes:
+      - ./n8n_data:/data
+    command: >
+      sh -c "
+        mkdir -p /data &&
+        chown -R 1000:1000 /data &&
+        chmod -R 755 /data
+      "
+    networks:
+      - n8n-network
+
   n8n:
     image: n8nio/n8n:latest
     restart: unless-stopped
+    user: "1000:1000"
     ports:
       - "5678:5678"
     env_file:
@@ -11,6 +26,7 @@ services:
     volumes:
       - ./n8n_data:/home/node/.n8n
     depends_on:
+      - n8n-init
       - postgres
     networks:
       - n8n-network
